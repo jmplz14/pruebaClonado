@@ -1,0 +1,18 @@
+---
+
+- debug:
+    msg: "******************** CUSTOM POST [START] *******************"
+
+- name: "Copy custom scripts to instance home"
+  copy:
+    src="scripts/"
+    dest="{{ plone_target_path }}/{{ plone_site_id }}/"
+    force=yes
+    owner={{ plone_buildout_user }}
+    group={{ plone_group }}
+    mode=preserve
+  tags:
+    - senaite-custom
+
+- debug:
+    msg: "******************** CUSTOM POST [DONE] ********************"

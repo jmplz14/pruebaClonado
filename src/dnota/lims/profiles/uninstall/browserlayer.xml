@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<layers>
+
+  <!-- Remove Browser Layer -->
+  <layer name="dnota.lims"
+         interface="dnota.lims.interfaces.IDNOTALimsLayer"
+         remove="True" />
+
+</layers>

@@ -1,0 +1,31 @@
+#!/bin/bash
+CWD=$(pwd)
+cd src
+
+echo ""
+echo "### $(date +%F)"
+
+for d in `find . -mindepth 1 -maxdepth 1 -type d | sort -t '\0' -n`
+do
+    cd $d
+    REPOS_NAME="${d#*\/}"
+    HASH_ID=`git rev-parse HEAD | cut -c 1-9`
+    HASH_FULL=`git rev-parse HEAD`
+    BRANCH=`git rev-parse --abbrev-ref HEAD`
+    URL=`git remote get-url origin`
+    URL="${URL%\.git}"
+    URL="${URL#*:}"
+    URL="${URL#*github\.com/}"
+    echo "- $REPOS_NAME: [\`$HASH_ID\`](https://github.com/$URL/commit/$HASH_FULL), [\`$HASH_ID...master\`](https://github.com/$URL/compare/$HASH_FULL...master)"
+    cd ..
+
+done
+
+cd $CWD
+
+echo ""
+echo "#### Buildout"
+echo "\`\`\`"
+./versions_buildout
+echo "\`\`\`"
+echo ""
