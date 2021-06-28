@@ -1,0 +1,41 @@
+{% for vhost in custom_vhosts %}
+# HTTP VHOST: {{ vhost }}
+server {
+    listen 80;
+    server_name {{ vhost }};
+    return 301 https://$server_name$request_uri;
+}
+
+# HTTPS VHOST: {{ vhost }}
+server {
+    listen 443 ssl;
+    server_name {{ vhost }};
+
+    ssl_certificate {{ ssl_certificate }};
+    ssl_certificate_key {{ ssl_certificate_key }};
+
+    ssl_session_timeout 10m;
+    ssl_protocols TLSv1.2;
+    ssl_prefer_server_ciphers on;
+
+    access_log /var/log/nginx/{{ plone_site_id }}.access.log;
+    error_log /var/log/nginx/{{ plone_site_id }}.error.log error;
+
+    # Allow Cross-Origin Resource Sharing from our HTTP domain
+    add_header "Access-Control-Allow-Origin" "http://{{ vhost }}";
+    add_header "Access-Control-Allow-Credentials" "true";
+    add_header "Access-Control-Allow-Methods" "GET, POST, OPTIONS";
+    add_header "X-Frame-Options" "SAMEORIGIN";
+
+    location / {
+        set $backend http://haproxy;
+        # API calls take a different backend w/o caching
+        if ($uri ~* "@@API") {
+            set $backend http://api;
+        }
+        include       snippets/proxy-params.conf;
+        rewrite       ^(.*)$ /VirtualHostBase/$scheme/$host/{{ plone_site_id }}/VirtualHostRoot/$1 break;
+        proxy_pass    $backend;
+    }
+}
+{% endfor %}
