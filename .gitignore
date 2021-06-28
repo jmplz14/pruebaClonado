@@ -86,7 +86,8 @@ docs/
 # ANSIBLE recipe
 ansible/playbook.retry
 ansible/roles
-ansible/senaite.ansible-playbook
+ansible/senaite.ansible-playbook/roles
 ansible/vault-password-file
 ansible/vault.txt
 /vm
+
