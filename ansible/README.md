@@ -1,4 +1,4 @@
-# Setup from scratch
+# Setup SENAITE's host/VM baseline
 
 First, install Debian buster. The easiest is to download the latest net installer
 iso from Debian's website and use it as the boot device of the target machine/host/VM.
@@ -23,10 +23,7 @@ following screens:
 After the base system installation, and in order to be able to use ansible
 playbook to setup the instance, we need to setup the target host.
 
-
-## Host configuration
-
-### Add senaite user to sudoers
+## Add senaite user to sudoers
 
 Login to the host with a superuser (usually `root`) and add `senaite` user to 
 the group of `sudoers`:
@@ -42,7 +39,7 @@ Add the following:
 senaite ALL=(ALL) NOPASSWD:ALL
 ```
 
-## Configure static IP (host-only interface)
+## Configure static IP (for host-only interface)
 
 This configuration of the static IP for a host-only interface is **only required
 if the system is a Virtual Machine with vboxnet interface enabled**. You can 
@@ -74,7 +71,7 @@ Reboot for the changes to take effect:
 $ sudo reboot -h now
 ```
 
-### Add your public key to the authorized_keys
+## Add your public key to the authorized_keys
 
 Add your public ssh to have remote access granted with `ssh-copy-id`. Run
 the following command *from your local machine*:
@@ -88,9 +85,9 @@ we've set when the host is a VM with a vboxnet0 interface (host-only network)
 enabled (see previous section). Change this IP accordingly.
 
 
-## Setup the Host/VM with Ansible
+# Deploy SENAITE application stack with Ansible
 
-### Install Python
+## Install Python
 
 Login to the host with `senaite` user and install python, that is required by 
 Ansible:
@@ -99,16 +96,10 @@ Ansible:
 $ sudo apt install python
 ```    
 
-### Install Ansible requirements
+## Install Ansible requirements
 
 Now, *in your local machine*, go to `ansible` directory from the add-on and 
-clone `senaite.ansible-playbook`:
-
-```sh
-$ git clone -b 2.x https://github.com/senaite/senaite.ansible-playbook
-```
-
-Check all is in place and we are able to reach the target host with ansible.
+check all is in place and we are able to reach the target host with ansible:
 
 ```sh
 $ ansible senaite-buster -i hosts.cfg -m setup
@@ -164,7 +155,7 @@ $ ansible-galaxy install -f -r senaite.ansible-playbook/requirements.yml
 ```
 
 
-### Run the Ansible playbook
+## Run the Ansible playbook
 
 Run the following command from your *local machine*:
 
@@ -208,19 +199,20 @@ Create a new SENAITE site by using lynx:
 $ lynx http://localhost:8081
 ```
 
-You can move through the links with the cursor. Choose "Create a new SENAITE site"
-and press "Enter". Type then the username and password and submit. 
+You can move through the links with the cursor. Choose "Create a new SENAITE 
+site" and press "Enter". Type then the username and password and submit. 
 
-A "Site Installation" form is displayed. Change the "Default timezone" by a suitable 
-value and leave the defaults on the rest of the settings ("Path identifier", "Title", 
-"Language"). Move with the cursor to "Create SENAITE Site" and press "Enter".
+A "Site Installation" form is displayed. Change the "Default timezone" by a 
+suitable value and leave the defaults on the rest of the settings ("Path 
+identifier", "Title", "Language"). Move with the cursor to "Create SENAITE Site"
+and press "Enter".
 
-Once the SENAITE site is created, you should be able to access to SENAITE from outside
-the host: http://192.168.33.10
+Once the SENAITE site is created, you should be able to access to SENAITE from
+outside the host: http://192.168.33.10
 
-Remember to change the IP in accordance and accept the self-signed certificate. You can 
-login with the same credentials you've used previously for the site creation. Go to the 
-add-ons installation page thereafter:
+Remember to change the IP in accordance and accept the self-signed certificate.
+You can  login with the same credentials you've used previously for the site 
+creation. Go to the add-ons installation page thereafter:
 https://192.168.33.10/prefs_install_products_form
 
 If not yet activated, press the button "Install" above "DNOTA.LIMS" to 
@@ -282,7 +274,8 @@ And rerun the Ansible playbook.
 
 ### Global Python interpreter is used
 
-Add this to the end of `/home/senaite/.profile` to use the local python interpreter from the buildout.
+Add this to the end of `/home/senaite/.profile` to use the local python 
+interpreter from the buildout.
 
     if [ -d "$HOME/python2.7" ] ; then
         echo "Using local Python installation"
